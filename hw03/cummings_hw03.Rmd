@@ -1,15 +1,11 @@
 ---
 title: "Useful Title"
 author: "Melvin Cummings"
-date: "`r format (Sys.time(), '%d %B %Y')`"
+date: "`r format(Sys.time(), '%d %B %Y')`"
 output: html_notebook
-editor_options: chunk_output_type: inline ___
-
-```{r}
-library(tidyverse)
-```
-
-
+editor_options: 
+  chunk_output_type:inline
+---
 ```{r}
 library(tidyverse)
 ```

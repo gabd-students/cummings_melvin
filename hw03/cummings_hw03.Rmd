@@ -40,4 +40,61 @@ ansc %>%
   ) 
 ```
 
+```{r}
+ansc %>%  ggplot(aes(x, y, color = dataset)) + geom_point() + facet_wrap(~dataset, ncol = 2)
+```
+
+```{r}
+library(knitr)
+library(xtable)
+head(iris)
+```
+
+```{r}
+kable(head(iris), align= c("l", "c", "r", "c", "l"), col.names = c("Sepal Length", "Sepal Width", "Sepal Length", "Sepal Width", "Species"))
+```
+
+```{r}
+head(airquality)
+
+kable(head(airquality), align= c("r", "r", "c", "c", "l", "l"), col.names = c("Ozone (ppb)", "Solar R (lang)", "Wind (mph)", "Temp (F)", "Month", "Day"))
+
+
+
+```
+
+```{r}
+head(chickwts)
+chichks_lm <- lm(weight ~ feed, data = chickwts) 
+summary(chichks_lm)
+```
+
+```{r}
+kable(chickwts)
+```
+
+
+When you insert kable on chick_wts it gives a lot more information on the on the table and just gives more of a listed form of straight information about the feed.
+
+```{r}
+xtable(chichks_lm) %>%  kable()
+```
+
+```{r}
+trees_lm <- lm(Girth ~ Height,  data = trees)
+
+summary(trees_lm)
+```
+
+```{r}
+xtable(trees_lm)
+kable(trees)
+```
+
+
+$e=mc^2$
+
+Bernoulli's Equation
+
+$p + 1/2 pV^2 + pgh = constant$ 
 

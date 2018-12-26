@@ -1,6 +1,6 @@
 ---
 title: "HW04 Part 1: Complete Chapter 3"
-author: "your name"
+author: "Melvin Cummings"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output: html_notebook
 editor_options: 
@@ -29,6 +29,13 @@ If you get an error, then you did not install the `tidyverse` package like you w
 
 Enter your code chunks for Section 3.2 here.
 
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy))
+
+```
+
+
+
 Get in the habit of entering a brief description of what each chunk of code does. Enter this above the chunk, like I did in Section 3.1.
 
 #### Section 3.2 Questions
@@ -36,18 +43,43 @@ Get in the habit of entering a brief description of what each chunk of code does
 Answer the questions *completely.* Some answers will require you to write code in a code chunk and also to type text before or after the chunk. Other answers will require only code or only text. 
 
 **1:** Run ggplot(data = mpg). What do you see?
+An empty graph
+
+```{r}
+ggplot(data = mpg)
+```
+
+
 
 
 **2:** How many rows are in `mpg`? How many columns? **Hint:** Use the `dim()` function. Type `dim()` in the console to learn what `dim()` does.
 
+Rows: 234   Columns:11
+
+```{r}
+dim(mpg)
+```
+
 
 **3:** What does the `drv` variable describe? Read the help for `?mpg` to find out.
 
+f = front-wheel drive, r = rear wheel drive, 4 = 4wd
 
 **4:** Make a scatterplot of `hwy` vs `cyl`.
 
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = hwy, y = cyl))
+```
+
 
 **5:** What happens if you make a scatterplot of `class` vs `drv`? Why is the plot not useful?
+
+This plot isnt useful because one class of car can have multiple wheel drive, such as subcompact having front,  rear, and 4 wheel drive
+
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = class, y = drv))
+```
+
 
 
 ### Section 3.3: Aesthetic mappings
@@ -57,26 +89,76 @@ Answer the questions *completely.* Some answers will require you to write code i
 
 **1:** What’s gone wrong with this code? Why are the points not blue?
 
+The points are not blue since colour is found within the aes, mapping and is consided as one value
+
+```{r}
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy, colour = "blue"))
+```
+
 
 **2:** Which variables in `mpg` are categorical? Which variables are continuous? (*Hint:* type `?mpg` to read the documentation for the dataset). How can you see this information when you run mpg?
+Categorical:Manufacturer, model, trans, drv, fl, class 
+Continuous:Displ, year, cyl, cty, hwy
+
+```{r}
+mpg
+```
 
 
 **3:** Map a continuous variable to color, size, and shape. How do these aesthetics behave differently for categorical vs. continuous variables? **Note:** You need several code chunks here to answer this question.
 
+A continuous variable cannot be mapped to shape since the difference between a square, circle, triangle is hard to distinguish with a value.
+
+```{r}
+ggplot(mpg, aes(x = displ, y = hwy, colour = fl)) +
+  geom_point()
+
+ggplot(mpg, aes(x = displ, y = hwy, size = fl)) +
+  geom_point()
+
+ggplot(mpg, aes(x = displ, y = hwy, shape = fl)) +
+  geom_point()
+
+ggplot(mpg, aes(x = displ, y = hwy, color = cyl)) +
+  geom_point()
+
+ggplot(mpg, aes(x = displ, y = hwy, size = cyl)) +
+  geom_point()
+
+ggplot(mpg, aes(x = displ, y = hwy, shape = cyl)) +
+  geom_point()
+```
+
 
 **4:** What happens if you map the same variable to multiple aesthetics?
+This is just a way to reinforce the same information that was proivded and one should be cautious if this occurs.
+
+```{r}
+ggplot(mpg, aes(x = displ, y = hwy, color = hwy, size = displ)) +
+  geom_point()
+
+```
 
 
 **5:** What does the stroke aesthetic do? What shapes does it work with? (*Hint:* use `?geom_point`)
+
+Stroke aesthetic defines the width of the border of the shape
+It works with shapes :21-25
 
 
 
 **6:** What happens if you map an aesthetic to something other than a variable name, like `aes(colour = displ < 5)`?
 
+This can show characteristics for expressions such as true or false.
+
+```{r}
+ggplot(mpg, aes(x = displ, y = hwy, color = displ < 5)) +
+  geom_point()
+```
+
 
 ### Section 3.5: Facets
-
-
 
 #### Section 3.5 questions
 

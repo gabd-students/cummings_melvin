@@ -1,0 +1,33 @@
+---
+title: "HW04 Part 1: Complete Chapter 3"
+author: "Melvin Cummings"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r}
+library(tidyverse)
+```
+
+#### Plot <no.1>
+Plot type: scatterplot
+Dataset: trees
+x-axis: height
+y-axis: girth
+```{r}
+data(trees)
+?trees
+ggplot(data = trees) + geom_point(mapping = aes(x = height, y = girth))
+```
+
+#### Plot <no.2>
+#### Plot <no.3>
+#### Plot <no.4>
+#### Plot <no.5>
+#### Plot <no.6>
+#### Plot <no.7>
+#### Plot <no.8>
+#### Plot <no.9>
+#### Plot <no.10>

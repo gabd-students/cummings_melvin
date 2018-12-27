@@ -163,26 +163,56 @@ ggplot(mpg, aes(x = displ, y = hwy, color = displ < 5)) +
 #### Section 3.5 questions
 
 **1:** What happens if you facet on a continuous variable? **Note:** Write a prediction, then make and run your code chunk.
+The facet will display all of the variables
 
+```{r}
+ggplot(mpg, aes(x = displ, y = hwy)) + geom_point() + facet_grid(. ~ cty)
+```
 
 
 **2:** What do the empty cells in plot with `facet_grid(drv ~ cyl)` mean? How do they relate to this plot?
 
+These plots which have empty cells do not have values for the combination of drv and cyl.
+
+
+```{r}
+ggplot(data = mpg) + facet_grid(drv ~ cyl)
+ggplot(data = mpg) + geom_point(mapping = aes(x = drv, y = cyl))
+
+```
 
 
 **3:** What plots does the following code make? What does `.` do?
+facet plots for drv and cyl, the period ignores the dimensions of which spot it takes
 
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  facet_grid(drv ~ .)
+
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  facet_grid(. ~ cyl)
+```
 
 
 **4:** Take the first faceted plot below. What are the advantages to using faceting instead of the colour aesthetic? What are the disadvantages? How might the balance change if you had a larger dataset?
+Advantages, it divides it up by the groups instead of having them all on one chart. Disadvantes are that the different categories cannot be compaired as well if the colors are similar. Larger data set would allow for more accurate grouping and show better overlap.
 
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_wrap(~ class, nrow = 2)
+```
 
 
 **5:** Read `?facet_wrap`. What does `nrow` do? What does `ncol` do? What other options control the layout of the individual panels? Why doesn’t `facet_grid()` have nrow and ncol argument?
 
+nrow and ncol: shows the number of rows and columns that the facet will have. the values are already determined in facet grid
 
 **6:** When using `facet_grid()` you should usually put the variable with more unique levels in the columns. Why?
 
+Because there is more room if you use landscape and the graph will be displayed much more nicely
 ### Section 3.6: Geometric objects
 
 
@@ -192,38 +222,86 @@ ggplot(mpg, aes(x = displ, y = hwy, color = displ < 5)) +
 **1:** What geom would you use to draw a line chart? A boxplot? A histogram? An area chart? **Note:** You will have to make some types of these charts in Part 2 of this assignment.
 
 
-**2:** Run this code in your head and predict what the output will look like. Then, run the code in R and check your predictions.
+geom_line()
+geom_boxplot()
+geom_histogram()
+geom_area()
 
+
+**2:** Run this code in your head and predict what the output will look like. Then, run the code in R and check your predictions.
+Color scatterplot with lines for the different asethetics
+
+```{r}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) + geom_point() + geom_smooth(se = FALSE)
+```
 
 
 **3:** What does `show.legend = FALSE` do? What happens if you remove it?
 **Note:** Skip the "Why do you think I used it earlier in the chapter?" question.
 
+Show.legend = False removes the legend and if you remove it then the legend shows.
+This wasnt used earlier because the values did not need a legend to describe them.
+
 
 **4:** What does the `se` argument to `geom_smooth()` do?
-
+Display the confidence interval of the plot around the line
 
 **5:** Will these two graphs look different? Why/why not?
+No, they use the same data throughout both plots.
+```{r}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point() + 
+  geom_smooth()
+
+ggplot() + 
+  geom_point(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_smooth(data = mpg, mapping = aes(x = displ, y = hwy))
+```
 
 
 **6:** Recreate the R code necessary to generate the following graphs. **Note:** Enter a separate code chunk for each graph, numbered 1 to 6, starting row-wise at upper left. 
 
 1: upper left.
 
+```{r}
+ggplot(mpg, aes(x = displ, y = hwy)) + geom_point() + geom_smooth(se = FALSE)
+```
+
 
 2: upper right.
+
+```{r}
+ggplot(mpg, aes(x = displ, y = hwy)) + geom_smooth(mapping = aes(group = drv), se = FALSE) + geom_point()
+```
 
 
 3: middle left.
 
+```{r}
+ggplot(mpg, aes(x = displ, y = hwy, colour = drv)) + geom_point() + geom_smooth(se = FALSE)
+```
+
 
 4: middle right.
+
+```{r}
+ggplot(mpg, aes(x = displ, y = hwy)) + geom_point(aes(colour = drv)) + geom_smooth(se = FALSE)
+```
 
 
 5: lower left.
 
+```{r}
+ggplot(mpg, aes(x = displ, y = hwy)) + geom_point(aes(colour = drv)) + geom_smooth(aes(linetype = drv), se = FALSE)
+```
+
 
 6: lower right. *Hint:* Read the help file for `geom_point`. Use `shape = 21`, `stroke = 2`, and `size = 3`.
+
+```{r}
+ggplot(mpg, aes(x = displ, y = hwy)) + geom_point(size = 3, stroke = 2, shape = 21) + geom_point(aes(colour = drv))
+```
+
 
 ### Section 3.7: Statistical transformations.
 
@@ -237,19 +315,43 @@ ggplot(mpg, aes(x = displ, y = hwy, color = displ < 5)) +
 
 **1:** What is the problem with this plot? How could you improve it. *Hint:* Remember the size of the `mpg` data set from earlier in this exercise. Does the number of points seem correct? **Note:** Write the code to improve it. 
 
+This plot is an crowded, it can be improved by a jitter plot
+
+```{r}
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + geom_point(position = "jitter")
+```
+
 
 **2:** What parameters to `geom_jitter()` control the amount of jittering?
 
+Width and Height control the amount of jittering
 
 **3:** Compare and contracts `geom_jitter()` with `geom_count()`.
+Jitter plot doenst overlaps data, while count plays off of the overplotting and uses it to its advantage 
+
+```{r}
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + geom_jitter()
+
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) + geom_count()
+```
+
 
 
 **4:** What is the default position adjustement for `geom_boxplot()`? Create a visualization of the `mpg` dataset that demonstrates it.
+The default position is dodge
+```{r}
+ggplot(data = mpg, aes(x = drv, y = hwy, color = class)) + geom_boxplot()
+```
+
 
 
 ### Section 3.9: Coordinate systems
 
 **Note:** Read about and do only the code chunk associated with `coord_flip()`. `coord_flip()` is a great layer to use when you have categorical data with longish names as it makes the text easier to read.
+
+```{r}
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + geom_boxplot() + coord_flip()
+```
 
 ### Section 3.10: The layered grammar of graphics
 

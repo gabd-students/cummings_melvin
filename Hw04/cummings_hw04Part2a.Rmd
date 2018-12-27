@@ -19,15 +19,137 @@ y-axis: girth
 ```{r}
 data(trees)
 ?trees
-ggplot(data = trees) + geom_point(mapping = aes(x = height, y = girth))
+ggplot(data = trees) + geom_point(mapping = aes(x=Height, y = Girth))
 ```
 
+This plot shows a positive correlation between the girth and height of trees.
 #### Plot <no.2>
+
+```{r}
+?year
+year <- c(1821:1934)
+
+class(lynx)
+as.vector(year)
+
+pelts <- c(as.vector(lynx))
+pelts
+
+lynx_pelts <- data.frame(year, pelts)
+lynx_pelts
+
+ggplot(data = lynx_pelts, mapping = aes(x = year, y = pelts)) + geom_line(color = "maroon")
+```
+This plot shows the treadline and difference in years as pelts increases and decreases.
+
 #### Plot <no.3>
+Plot type: scatterplot
+Dataset: iris
+x-axis: petal length
+y-axis: petal width
+Point color and shape by species. You do not have to use fillable shapes.
+Point size of 2
+Add a labs layer to change the x- and y-axis labels so that they do not have periods in the names (i.e., Petal Length, Petal Width).
+
+```{r}
+data("iris")
+?iris
+ggplot(data = iris) + geom_point(mapping = aes(x = Petal.Length, y = Petal.Width, color = Species, shape = Species, size = 2)) + labs(x = "Petal Length") + labs(y = "Petal Width")
+
+
+```
+
+This plot shows the correlation between the petal length and petal width of the differenct species of iris
 #### Plot <no.4>
+ Plot type: Violin plot (look up geom_violin)
+• Dataset: msleep
+• x-axis: vore
+• y-axis: sleep_rem
+• fill = grayXX where XX is either 30 or 70.
+• In your description, describe in your own words what violin plots display (you can search the interwebs),
+and what is the difference among the two versions of gray shading. Hint: the grays extend from gray0
+to gray100. You can learn more about colors in R from
+```{r}
+data("msleep")
+?msleep
+ggplot(msleep) + geom_violin(mapping = aes(x = vore, y = sleep_rem), fill = "grey30")
+```
+
+This plot shows the correlation between the rem sleep and what type of mammal.
 #### Plot <no.5>
+ Plot type: Violin plot (look up geom_violin)
+• Dataset: msleep
+• x-axis: vore
+• y-axis: sleep_rem
+• fill = grayXX where XX is either 30 or 70.
+• In your description, describe in your own words what violin plots display (you can search the interwebs),
+and what is the difference among the two versions of gray shading. Hint: the grays extend from gray0
+to gray100. You can learn more about colors in R from
+```{r}
+data("msleep")
+?msleep
+ggplot(msleep) + geom_violin(mapping = aes(x = vore, y = sleep_rem), fill = "grey70")
+```
+This plot is nearly identical to plot 4 but has a different shade of gray when compared to plot 4.
 #### Plot <no.6>
 #### Plot <no.7>
+• Plot type: boxplot
+• Dataset: msleep
+• x-axis: order
+• y-axis: sleep_total
+• use coord_flip()
+
+```{r}
+data("msleep")
+?msleep
+ggplot(data = msleep) + geom_boxplot(mapping = aes(x = order, y = sleep_total)) + coord_flip()
+
+```
+
+This plot is a box plot which shows the order of mammals when compared to total sleep
 #### Plot <no.8>
+Plot type: boxplot with points
+• Dataset: msleep
+• x-axis: conservation
+• y-axis: awake
+3
+• You must have a boxplot layer, a point layer, and a jitter layer.
+• color by conservation status.
+• You may use coord_flip but it is not required. Try both and choose the one you think looks best.
+• Add a lab layer to change both axis labels so each starts with an upper-case letter.
+• Search the internet to find out how to change the legend title to Conservation. Make that change.
+(Do not try to change the actual legend entries like “cd” and “vu”). Note: This can be done a couple
+of different ways but scale_color_discrete() is one good way
+
+```{r}
+data("msleep")
+ggplot(data = msleep) + geom_boxplot(mapping = aes(x = conservation, y = awake, color = conservation)) + labs(x = "Conservation") + labs(y = "Awake") + geom_jitter(mapping = aes(x = conservation, y = awake, color = conservation)) + geom_point(mapping = aes(x = conservation, y = awake, color = conservation)) + coord_flip() + scale_fill_discrete(name = "Conservation")
+
+```
+
+This plot shows the time that the mammal is awake when compared to conservation.
 #### Plot <no.9>
+One should plot any one of the “sleep” or “awake” variables against body weight. The other should
+plot any one of the “sleep” or “awake” variables against brain weight.
+• In each plot, color the points by one of the nominal data categories. Use a different category for each
+plot.
+• Apply facet_wrap() to at least one of the plots using one of the nominal variables. You decide whether
+you use 2 or 3 columns. Hint: use one of the nominal variables with relatively few different types for
+wrapping. Explore: What happens if you use a nominal variable like genus, with lots of types?
+• You should try a few versions of each graph until you find combinations that you think show some clear
+trends.
+
+• Describe the patterns or trends you see in each graph.
+If you use nominal the data ruins the graph by being to large
+```{r}
+ggplot(data = msleep) + geom_point(mapping = aes(x = awake, y = brainwt, color = sleep_total)) 
+```
+
+This plot shows the amount of mammal awake when compared to the brain weight.
 #### Plot <no.10>
+
+```{r}
+ggplot(data = msleep) + geom_point(mapping = aes(x = sleep_rem, y = bodywt, color = sleep_cycle)) + facet_wrap(~ vore, ncol = 2) 
+```
+
+These plots shows the difference of rem sleep when compared to body weight between the different mammal vore types.

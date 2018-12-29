@@ -288,9 +288,10 @@ left_join(tidy4a, tidy4b)
 
 ```{r}
 table4a %>% 
-  gather(1999, 2000, key = "year", value = "cases")
+  gather(`1999`, `2000`, key = "year", value = "cases")
 #> Error in inds_combine(.vars, ind_list): Position must be between 0 and n
 ```
+the years did not have back tickmarks on them ` 
 
 That is all for Chapter 12. On to the last chapter.
 
@@ -305,6 +306,12 @@ Time to [get small.](https://www.youtube.com/watch?v=GOrdzCHnpw4)
 
 Load the necessary libraries. As usual, type the examples into and run the code chunks.
 
+```{r}
+nycflights13::flights
+```
+
+
+
 ### 5.2: Filter rows with `filter()`
 
 Study Figure 5.1 carefully. Once you learn the `&`, `|`, and `!` logic, you will find them to be very powerful tools.
@@ -314,32 +321,80 @@ Study Figure 5.1 carefully. Once you learn the `&`, `|`, and `!` logic, you will
 
 **1.1:** Find all flights with a delay of 2 hours or more.
 
+```{r}
+nycflights13::flights
+flights <- nycflights13::flights
+filter(flights , arr_delay >= 120)
+```
+
 
 **1.2:** Flew to Houston (IAH or HOU)
+
+```{r}
+filter(flights, dest == "IAH" | dest == "HOU")
+```
 
 
 **1.3:** Were operated by United (UA), American (AA), or Delta (DL).
 
+```{r}
+nycflights13::airlines
+filter(flights, carrier %in% c("AA", "DL", "UA"))
+```
+
 
 **1.4:** Departed in summer (July, August, and September).
+
+```{r}
+filter(flights, month >= 7, month <= 9)
+```
 
 
 **1.5:** Arrived more than two hours late, but didn’t leave late.
 
+```{r}
+filter(flights, dep_delay <= 0, arr_delay > 120)
+```
+
 **1.6:** Were delayed by at least an hour, but made up over 30 minutes in flight. This is a tricky one. Do your best.
+
+```{r}
+filter(flights, dep_delay >= 60, dep_delay - arr_delay > 30)
+```
 
 
 **1.7:** Departed between midnight and 6am (inclusive)
 
+```{r}
+filter(flights, dep_time <= 600 | dep_time == 2400)
+```
+
 
 **2:** Another useful dplyr filtering helper is `between()`. What does it do? Can you use it to simplify the code needed to answer the previous challenges?
+
+finds the months inbetween 7&9
+the summer months 
+```{r}
+filter(flights, between(month, 7, 9))
+```
 
 
 **3:** How many flights have a missing dep_time? What other variables are missing? What might these rows represent?
 
+```{r}
+filter(flights, is.na(dep_time))
+```
+arrival time, departure delay, arrival delay
+canceled flights 
 
 **4:** Why is `NA ^ 0` not missing? Why is `NA | TRUE` not missing? Why is `FALSE & NA` not missing? Can you figure out the general rule? (`NA * 0` is a tricky counterexample!)
 
+```{r}
+NA ^ 0
+NA | TRUE
+NA & FALSE
+```
+NA ^ 0 is not = 0
 **Note:** For some context, see [this thread](https://blog.revolutionanalytics.com/2016/07/understanding-na-in-r.html)
 
 
@@ -349,20 +404,46 @@ Study Figure 5.1 carefully. Once you learn the `&`, `|`, and `!` logic, you will
 #### 5.3 Questions
 
 **1:** How could you use `arrange()` to sort all missing values to the start? (Hint: use is.na()). **Note:** This one should still have the earliest departure dates after the `NA`s. *Hint:* What does `desc()` do?
-
+places it in ascending order 
+```{r}
+arrange(flights, desc(is.na(dep_time)), dep_time)
+```
 
 **2:** Sort flights to find the most delayed flights. Find the flights that left earliest. 
 
 This question is asking for the flights that were most delayed (left latest after scheduled departure time) and least delayed (left ahead of scheduled time).
 
+most delay: jan 9 2013 at 9:00
+earliest dep: dec 7 2013 at 21:23
+
+```{r}
+arrange(flights, desc(dep_delay))
+arrange(flights, dep_delay)
+```
 
 **3:** Sort flights to find the fastest flights. Interpret fastest to mean shortest time in the air.
+
+```{r}
+arrange(flights, air_time) 
+```
 
 
 *Optional challenge:* fastest flight could refer to fastest air speed. Speed is measured in miles per hour but time is minutes. Arrange the data by fastest air speed.
 
+```{r}
+arrange(flights, distance / air_time * 60)
+```
+
 
 **4:** Which flights travelled the longest? Which travelled the shortest?
+
+Longest:4983
+Shortet:17
+
+```{r}
+arrange(flights, desc(distance))
+arrange(flights, distance)
+```
 
 
 ### 5.4 Select columns with `select()`
@@ -371,20 +452,33 @@ This question is asking for the flights that were most delayed (left latest afte
 
 **1:** Brainstorm as many ways as possible to select `dep_time`, `dep_delay`, `arr_time`, and `arr_delay` from flights. Find at least three ways.
 
+```{r}
+select(flights, dep_time, dep_delay, arr_time, arr_delay)
+select(flights, 4, 6, 7, 9)
+select(flights, "dep_time", "dep_delay", "arr_time", "arr_delay")
+```
+
 
 **2:** What happens if you include the name of a variable multiple times in a `select()` call?
 
-
+If you repeat variables they get ignored
 
 **3:** What does the `one_of()` function do? Why might it be helpful in conjunction with this vector?
 
-`vars <- c("year", "month", "day", "dep_delay", "arr_delay")`
+vars <- c("year", "month", "day", "dep_delay", "arr_delay")`
 
+it is easier to use vectors than ""
 
 
 **4:** Does the result of running the following code surprise you? How do the select helpers deal with case by default? How can you change that default?
 
-`select(flights, contains("TIME"))`
+select(flights, contains("TIME"))
+```{r}
+select(flights, contains("TIME"))
 
+```
 
+```{r}
+select(flights, contains("Time", ignore.case = FALSE))
+```
 

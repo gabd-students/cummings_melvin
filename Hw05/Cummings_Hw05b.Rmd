@@ -7,23 +7,145 @@ editor_options:
   chunk_output_type: inline
 ---
 
-
+###Limpet
 ```{r}
 library(tidyverse)
 limpets <- read.csv("~/Bi485/cummings_melvin/Data/limpets.csv")
 limpets
 ```
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
-
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
-
 ```{r}
-plot(cars)
+read_csv("~/Bi485/cummings_melvin/Data/limpets.csv", col_types = c("ncc"))
+factor(limpets$Site %>% c("PBL", "KNRM", "VBG", "WP", "PF", "DP", "SIO", "CTZ1", "CTZ2", "CNM"), ordered = TRUE)
+ggplot(data = limpets, mapping = aes(x = Site, y = Length, color = Protected)) + geom_boxplot() + ylab("Length (mm)") 
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+The box plot shows that the outliers are found within DP and WP. The protected sites have larger quartile ranges then those who were not protected.
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+##Roseate Terns
+
+```{r}
+library(tidyverse)
+roseate <- read_tsv("~/Bi485/cummings_melvin/Data/roseate_terns.txt")
+
+T_roseate <- roseate %>% 
+  gather("AR", "AL", "AC", "BR", "BL", "BC", "JR", "JL", "JC", key = "Site", value = "People")
+T_roseate
+
+filter(T_roseate, is.na(People) == FALSE)
+
+ggplot(data = T_roseate,mapping = aes(x = year,y = People))+geom_line() + facet_wrap(~ Site, nrow = 2)
+
+
+```
+
+The populations that increased were, AC, Al, AR, BC, and BL, AR had the biggest incresase. The decreasing were Br and JR. While JC and JL stayed relatively the same.
+
+##Darters
+
+```{r}
+darter <- read_tsv("~/Bi485/cummings_melvin/data/darter.txt")
+darter
+
+start_pos <- c(1, 4, 15, 16, 17, 18, 21, 25, 29, 33, 36, 39, 40)
+stop_pos <- c(3, 14, 15, 16, 17, 20, 24, 28, 32, 35, 38, 40, 41)
+names <- c("specimen id", "species", "riffle", "age", "sex", "length", "depth", "velocity", "temperature", "majsub", "minsub", "majtype", "mintype")
+
+darter <- read_fwf("darter.txt", fwf_positions(start_pos, stop_pos, col_names = names), skip = 15)
+
+darter_riffle <- darter$riffle <- factor(darter$riffle, levels = c("1", "2"), ordered = FALSE)
+
+darter_majT <- darter$majtype <- factor(darter$majtype, levels = c("s", "fg", "sg", "lg", "c"), ordered = TRUE)
+
+```
+
+```{r}
+darter_1 <- darter %>%  filter(!species %in% c("zonale", "tetrazonum")) 
+darter_1
+```
+```{r}
+darter_2 <- subset(darter_1, select = -c(mintype, minsub))
+darter_2
+
+colnames(darter_2)[colnames(darter_2)=="majsub"] <- "major_substrate"
+
+colnames(darter_2)[colnames(darter_2)=="majtype"] <- "major_type"
+darter_2
+
+
+```
+
+Plot 1
+```{r}
+ggplot(data = darter_2, mapping = aes(x = length, y = depth, color = species, shape = species)) + 
+  geom_point() +
+  facet_wrap(~ riffle, nrow = 2)
+```
+There are fewer outliers in the second riffle
+
+Plot 2
+```{r}
+ggplot(data = darter_2, mapping = aes(x = species, y = length)) + 
+  geom_boxplot() +
+  facet_wrap(~ riffle, nrow = 2)
+```
+
+Plot 2 shows the greatest number of outliers
+
+Plot 3
+```{r}
+ggplot(data = darter_2, mapping = aes(x = "majtype", y = length)) +
+  geom_boxplot() +
+  facet_grid(species ~ riffle) +
+  labs(x = "Major Type of Species", y = "Length (cm)")
+```
+
+```{r}
+ggplot(data = darter_2, mapping = aes(x = "majtype", y = length)) +
+  geom_boxplot() +
+  facet_grid(riffle ~ species) +
+  labs(x = "Major Type of Species", y = "Length (cm)")
+```
+Changes the chart colums and rows from 2:3 to 3:2
+
+##Blacklip Abalone
+Chunk1
+```{r}
+library(tidyverse)
+abalone <- read.csv("~/Bi485/cummings_melvin/Data/abalone.csv")
+ggplot(data = abalone) + geom_boxplot(mapping = aes(x = Type, y = Height))
+```
+
+Chunk2
+```{r}
+ggplot(data = abalone) + geom_point(mapping = aes(x = Rings, y = Height
+))
+```
+The large individuals are not related to the old individuals
+
+Chunk3
+```{r}
+abalone_filter <- filter(abalone, Height < 0.3)
+
+abalone_Type <- abalone <- factor(abalone, levels = c("I", "F", "M"), ordered = TRUE)
+
+ggplot(data = abalone_filter, mapping = aes(x = Rings, y = Height)) + geom_point() + facet_wrap(~ Type, nrow = 1)
+```
+The pattern that emerge are that females and males are typically larger than immatures. Females seem to be larger in Height than males. Not all immatures are smaller than females or males.
+
+Chunk 4
+```{r}
+filter(abalone_filter, Height == 0)
+abalone_filter[abalone_filter == 0] <- NA
+Newabalone_filter <- filter(abalone_filter, is.na(Height) == FALSE)
+ggplot(data = Newabalone_filter, mapping = aes(x = Rings, y = Height)) + geom_point() + facet_wrap(~Type, 1)
+```
+
+```{r}
+ggplot(data = Newabalone_filter, mapping = aes(x = ShellWeight, y = Diameter, shape = Type, color = Rings)) + geom_point()
+
+ggplot(data = Newabalone_filter, mapping = aes(x = Type, y = Diameter, color = Rings)) + geom_jitter()  
+```
+
+

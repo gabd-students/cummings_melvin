@@ -1,0 +1,270 @@
+---
+title: "HW 07 Part 2"
+author: "Melvin Cummings"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r}
+library(tidyverse)
+library(GGally)
+library(devtools)
+library(patchwork)
+```
+
+```{r}
+file_path <- "~/Bi485/cummings_melvin/data"
+
+aegla <- read_csv(file.path(file_path, "aegla_crabs.csv"))
+
+View(aegla)
+
+```
+
+```{r}
+select(aegla, Width, Depth, Flow, pH, TDS, Cond, N, Ni, Nt, Phos, Mg, Ca, Crab)
+```
+
+```{r}
+drop_na(aegla, nrow(1))
+```
+
+```{r}
+aegla <- aegla %>%
+  mutate(row_order = 1:nrow(.))
+aegla
+```
+
+```{r}
+p_width <- aegla %>%
+  ggplot(aes(x = row_order)) +
+  geom_boxplot(aes(y = Width)) +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+p_width
+```
+```{r}
+p_depth <- aegla %>%
+  ggplot(aes(x = row_order)) +
+  geom_boxplot(aes(y = Depth)) +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+p_depth
+```
+
+```{r}
+p_flow <- aegla %>%
+  ggplot(aes(x = row_order)) +
+  geom_boxplot(aes(y = Flow)) +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+p_flow
+```
+
+```{r}
+p_pH <- aegla %>%
+  ggplot(aes(x = row_order)) +
+  geom_boxplot(aes(y = pH)) +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+p_pH
+```
+
+```{r}
+p_tds <- aegla %>%
+  ggplot(aes(x = row_order)) +
+  geom_boxplot(aes(y = TDS)) +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+p_tds
+```
+
+```{r}
+p_cond <- aegla %>%
+  ggplot(aes(x = row_order)) +
+  geom_boxplot(aes(y = Cond)) +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+p_cond
+```
+
+```{r}
+p_n <- aegla %>%
+  ggplot(aes(x = row_order)) +
+  geom_boxplot(aes(y = N)) +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+p_n
+```
+
+```{r}
+p_ni <- aegla %>%
+  ggplot(aes(x = row_order)) +
+  geom_boxplot(aes(y = Ni)) +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+p_ni
+```
+
+```{r}
+p_nt <- aegla %>%
+  ggplot(aes(x = row_order)) +
+  geom_boxplot(aes(y = Nt)) +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+p_nt
+```
+
+```{r}
+p_phos <- aegla %>%
+  ggplot(aes(x = row_order)) +
+  geom_boxplot(aes(y = Phos)) +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+p_phos
+```
+
+```{r}
+p_mg <- aegla %>%
+  ggplot(aes(x = row_order)) +
+  geom_boxplot(aes(y = Mg)) +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+p_mg
+```
+
+```{r}
+p_ca <- aegla %>%
+  ggplot(aes(x = row_order)) +
+  geom_boxplot(aes(y = Ca)) +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+p_ca
+```
+
+```{r}
+p_crab <- aegla %>%
+  ggplot(aes(x = row_order)) +
+  geom_boxplot(aes(y = Crab)) +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+p_crab
+```
+
+```{r}
+p_width + p_depth + p_flow
+```
+
+```{r}
+p_pH + p_tds + p_cond
+```
+
+```{r}
+p_n + p_ni + p_nt
+```
+
+```{r}
+p_phos + p_mg + p_ca + p_crab 
+```
+
+```{r}
+p_crab + p_phos + p_nt + p_depth
+```
+
+I think that p_crab, p_nt, and p_depth are the three that have apparent outliers, with p_phos being the actual outlier. These have the biggest distrubtion between the data with p_phos having a much larger value than 1.5 times the size.
+
+###Cleveland Plot
+```{r}
+p_crab1 <- aegla %>%
+  ggplot(aes(y = row_order)) +
+  geom_point(aes(x = Crab)) +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+p_crab1
+```
+
+```{r}
+p_phos1 <- aegla %>%
+  ggplot(aes(y = row_order)) +
+  geom_point(aes(x = Phos)) +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+p_phos1
+```
+
+```{r}
+p_nt1 <- aegla %>%
+  ggplot(aes(y = row_order)) +
+  geom_point(aes(x = Nt)) +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+p_nt1
+```
+
+```{r}
+p_depth1 <- aegla %>%
+  ggplot(aes(y = row_order)) +
+  geom_point(aes(x = Depth)) +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+p_depth1
+```
+
+```{r}
+p_crab1 + p_phos1 + p_nt1 + p_depth1 
+```
+
+```{r}
+histogram_phos <- aegla %>%
+  ggplot() +
+  geom_histogram(aes(x = Phos),
+                 binwidth = 0.025,
+                 boundary = 0,
+                 closed = "right",
+                 color = "black") +
+  scale_x_continuous(breaks = seq(0, 1, by = .2))
+histogram_phos
+```
+```{r}
+histogram_depth <- aegla %>%
+  ggplot() +
+  geom_histogram(aes(x = Depth),
+                 binwidth = .25,
+                 boundary = 0,
+                 closed = "right",
+                 color = "black") +
+  scale_x_continuous(breaks = seq(0, 6, by = 0.5))
+histogram_depth
+```
+
+```{r}
+histogram_crab <- aegla %>%
+  ggplot() +
+  geom_histogram(aes(x = Crab),
+                 binwidth = 0.5,
+                 boundary = 0,
+                 closed = "right",
+                 color = "black") +
+  scale_x_continuous(breaks = seq(0, 24, by = 2))
+histogram_crab
+```
+

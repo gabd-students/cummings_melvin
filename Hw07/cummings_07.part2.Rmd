@@ -233,6 +233,7 @@ p_depth1
 p_crab1 + p_phos1 + p_nt1 + p_depth1 
 ```
 
+###Histogram Plots
 ```{r}
 histogram_phos <- aegla %>%
   ggplot() +
@@ -266,5 +267,42 @@ histogram_crab <- aegla %>%
                  color = "black") +
   scale_x_continuous(breaks = seq(0, 24, by = 2))
 histogram_crab
+```
+
+###Density Plots
+```{r}
+d_phos <- aegla %>%
+  ggplot() +
+  geom_density(aes(x = Phos),
+                  color = "black") +
+  scale_x_continuous(breaks = seq(0, 1, by = .1))
+d_phos
+```
+
+```{r}
+d_depth <- aegla %>%
+  ggplot() +
+  geom_density(aes(x = Depth),
+                  color = "black") +
+  scale_x_continuous(breaks = seq(0, 5, by = 1))
+d_depth
+```
+
+```{r}
+d_crab <- aegla %>%
+  ggplot() +
+  geom_density(aes(x = Crab),
+                  color = "black") +
+  scale_x_continuous(breaks = seq(0, 24, by = 2))
+d_crab
+```
+
+###Histogram and Density Phos
+```{r}
+histogram_phos + d_phos
+```
+
+```{r}
+aegla %>% ggpairs(columns = 1:14)
 ```
 

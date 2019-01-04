@@ -1,0 +1,29 @@
+---
+title: "HW 07 Part 1"
+author: "Melvin Cummings"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+
+
+
+
+
+```{r}
+library(dplyr)
+library(tidyverse)
+library(GGally)
+library(patchwork)
+```
+
+```{r}
+sparrow <- read_tsv("sparrows.txt")
+sparrow
+```
+```{r}
+file_path <- ("~/Bi485/cummings_melvin/Data/sparrows.txt")
+
+```
+

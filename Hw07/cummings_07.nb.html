@@ -11,7 +11,7 @@
 
 <meta name="author" content="Melvin Cummings" />
 
-<meta name="date" content="2019-01-03" />
+<meta name="date" content="2019-01-04" />
 
 <title>HW 07 Part 1</title>
 
@@ -237,12 +237,14 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">HW 07 Part 1</h1>
 <h4 class="author"><em>Melvin Cummings</em></h4>
-<h4 class="date"><em>03 January 2019</em></h4>
+<h4 class="date"><em>04 January 2019</em></h4>
 
 </div>
 
 
 <!-- rnb-text-begin -->
+<div id="part-1" class="section level2">
+<h2>Part 1</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShkcGx5cilcbmxpYnJhcnkodGlkeXZlcnNlKVxubGlicmFyeShHR2FsbHkpXG5saWJyYXJ5KHBhdGNod29yaylcbmBgYCJ9 -->
@@ -253,6 +255,8 @@ library(patchwork)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<div id="import-and-wrangle" class="section level3">
+<h3>Import and wrangle</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3BhcnJvdyA8LSByZWFkX3RzdihcInNwYXJyb3dzLnR4dFwiKVxuYGBgIn0= -->
@@ -290,6 +294,8 @@ cols(
 </div>
 <!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZmlsZV9wYXRoIDwtIChcIn4vQmk0ODUvY3VtbWluZ3NfbWVsdmluL0RhdGEvc3BhcnJvd3MudHh0XCIpXG5maWxlX3BhdGhcbmBgYCJ9 -->
 <pre class="r"><code>file_path &lt;- (&quot;~/Bi485/cummings_melvin/Data/sparrows.txt&quot;)
@@ -307,8 +313,228 @@ file_path</code></pre>
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3BhcnJvd3MgPC0gc3BhcnJvdyAlPiVcbiAgbXV0YXRlKGJveF9ncm91cCA9IFwiU3BhcnJvd3NcIixcbiAgICAgICAgIHJvd19vcmRlciA9IDE6IG5yb3coLikpXG5WaWV3KHNwYXJyb3dzKVxuYGBgIn0= -->
+<pre class="r"><code>sparrows &lt;- sparrow %&gt;%
+  mutate(box_group = &quot;Sparrows&quot;,
+         row_order = 1: nrow(.))
+View(sparrows)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="figure-2" class="section level3">
+<h3>Figure 2</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxvdF9ib3ggPC1cbiAgc3BhcnJvd3MgJT4lXG4gIGdncGxvdChhZXMoeCA9IGJveF9ncm91cCxcbiAgICAgICAgICAgICB5ID0gd2luZ2NyZCkpICtcbiAgZ2VvbV9ib3hwbG90KHdpZHRoID0gMC4yNSkgK1xuICBsYWJzKHggPSBOVUxMLFxuICAgICAgIHkgPSBcIldpbmcgbGVuZ3RoIChtbSlcIilcbnBsb3RfYm94XG5gYGAifQ== -->
+<pre class="r"><code>plot_box &lt;-
+  sparrows %&gt;%
+  ggplot(aes(x = box_group,
+             y = wingcrd)) +
+  geom_boxplot(width = 0.25) +
+  labs(x = NULL,
+       y = &quot;Wing length (mm)&quot;)
+plot_box</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxvdF9jbGV2ZWxhbmQgPC1cbiAgc3BhcnJvd3MgJT4lXG4gIGdncGxvdChhZXMoeCA9IHdpbmdjcmQsXG4gICAgICAgICAgICAgeSA9IHJvd19vcmRlcikpICtcbiAgZ2VvbV9wb2ludCgpICtcbiAgbGFicyh4ID0gXCJXaW5nIGxlbmd0aCAobW0pXCIsXG4gICAgICAgeSA9IFwiT3JkZXIgb2YgdGhlIGRhdGFcIilcbnBsb3RfY2xldmVsYW5kXG5gYGAifQ== -->
+<pre class="r"><code>plot_cleveland &lt;-
+  sparrows %&gt;%
+  ggplot(aes(x = wingcrd,
+             y = row_order)) +
+  geom_point() +
+  labs(x = &quot;Wing length (mm)&quot;,
+       y = &quot;Order of the data&quot;)
+plot_cleveland</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxvdF9ib3ggKyBwbG90X2NsZXZlbGFuZCArIGNvb3JkX2ZsaXAoKVxuYGBgIn0= -->
+<pre class="r"><code>plot_box + plot_cleveland + coord_flip()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="figure-3" class="section level3">
+<h3>Figure 3</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucF9jdWxtZW4gPC0gc3BhcnJvd3MgJT4lXG4gIGdncGxvdChhZXMoeSA9IHJvd19vcmRlcikpICtcbiAgZ2VvbV9wb2ludChhZXMoeCA9IGN1bG1lbikpICtcbiAgdGhlbWUoYXhpcy50aXRsZS55PWVsZW1lbnRfYmxhbmsoKSxcbiAgICAgICAgYXhpcy50ZXh0Lnk9ZWxlbWVudF9ibGFuaygpLFxuICAgICAgICBheGlzLnRpY2tzLnk9ZWxlbWVudF9ibGFuaygpKVxucF9jdWxtZW5cbmBgYCJ9 -->
+<pre class="r"><code>p_culmen &lt;- sparrows %&gt;%
+  ggplot(aes(y = row_order)) +
+  geom_point(aes(x = culmen)) +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+p_culmen</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucF9uYXBvc3BpIDwtIHNwYXJyb3dzICU+JVxuICBnZ3Bsb3QoYWVzKHkgPSByb3dfb3JkZXIpKSArXG4gIGdlb21fcG9pbnQoYWVzKHggPSBuYWxvc3BpKSkgK1xuICB0aGVtZShheGlzLnRpdGxlLnk9ZWxlbWVudF9ibGFuaygpLFxuICAgICAgICBheGlzLnRleHQueT1lbGVtZW50X2JsYW5rKCksXG4gICAgICAgIGF4aXMudGlja3MueT1lbGVtZW50X2JsYW5rKCkpXG5wX25hcG9zcGlcbmBgYCJ9 -->
+<pre class="r"><code>p_napospi &lt;- sparrows %&gt;%
+  ggplot(aes(y = row_order)) +
+  geom_point(aes(x = nalospi)) +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+p_napospi</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucF93dCA8LSBzcGFycm93cyAlPiVcbiAgZ2dwbG90KGFlcyh5ID0gcm93X29yZGVyKSkgK1xuICBnZW9tX3BvaW50KGFlcyh4ID0gd3QpKSArXG4gIHRoZW1lKGF4aXMudGl0bGUueT1lbGVtZW50X2JsYW5rKCksXG4gICAgICAgIGF4aXMudGV4dC55PWVsZW1lbnRfYmxhbmsoKSxcbiAgICAgICAgYXhpcy50aWNrcy55PWVsZW1lbnRfYmxhbmsoKSlcbnBfd3RcbmBgYCJ9 -->
+<pre class="r"><code>p_wt &lt;- sparrows %&gt;%
+  ggplot(aes(y = row_order)) +
+  geom_point(aes(x = wt)) +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+p_wt</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucF93aW5nY3JkPC0gc3BhcnJvd3MgJT4lXG4gIGdncGxvdChhZXMoeSA9IHJvd19vcmRlcikpICtcbiAgZ2VvbV9wb2ludChhZXMoeCA9IHdpbmdjcmQpKSArXG4gIHRoZW1lKGF4aXMudGl0bGUueT1lbGVtZW50X2JsYW5rKCksXG4gICAgICAgIGF4aXMudGV4dC55PWVsZW1lbnRfYmxhbmsoKSxcbiAgICAgICAgYXhpcy50aWNrcy55PWVsZW1lbnRfYmxhbmsoKSlcbnBfd2luZ2NyZFxuYGBgIn0= -->
+<pre class="r"><code>p_wingcrd&lt;- sparrows %&gt;%
+  ggplot(aes(y = row_order)) +
+  geom_point(aes(x = wingcrd)) +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+p_wingcrd</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucF90YXJzdXMgPC0gc3BhcnJvd3MgJT4lXG4gIGdncGxvdChhZXMoeSA9IHJvd19vcmRlcikpICtcbiAgZ2VvbV9wb2ludChhZXMoeCA9IHRhcnN1cykpICtcbiAgdGhlbWUoYXhpcy50aXRsZS55PWVsZW1lbnRfYmxhbmsoKSxcbiAgICAgICAgYXhpcy50ZXh0Lnk9ZWxlbWVudF9ibGFuaygpLFxuICAgICAgICBheGlzLnRpY2tzLnk9ZWxlbWVudF9ibGFuaygpKVxucF90YXJzdXNcbmBgYCJ9 -->
+<pre class="r"><code>p_tarsus &lt;- sparrows %&gt;%
+  ggplot(aes(y = row_order)) +
+  geom_point(aes(x = tarsus)) +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+p_tarsus</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucF9oZWFkIDwtIHNwYXJyb3dzICU+JVxuICBnZ3Bsb3QoYWVzKHkgPSByb3dfb3JkZXIpKSArXG4gIGdlb21fcG9pbnQoYWVzKHggPSBoZWFkKSkgK1xuICB0aGVtZShheGlzLnRpdGxlLnk9ZWxlbWVudF9ibGFuaygpLFxuICAgICAgICBheGlzLnRleHQueT1lbGVtZW50X2JsYW5rKCksXG4gICAgICAgIGF4aXMudGlja3MueT1lbGVtZW50X2JsYW5rKCkpXG5wX2hlYWRcbmBgYCJ9 -->
+<pre class="r"><code>p_head &lt;- sparrows %&gt;%
+  ggplot(aes(y = row_order)) +
+  geom_point(aes(x = head)) +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank())
+p_head</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucF9jdWxtZW4gKyBwX25hcG9zcGkgKyBwX3d0ICsgcF93aW5nY3JkICsgcF90YXJzdXMgKyBwX2hlYWQgKyBwbG90X2xheW91dChuY29sID0gMylcbmBgYCJ9 -->
+<pre class="r"><code>p_culmen + p_napospi + p_wt + p_wingcrd + p_tarsus + p_head + plot_layout(ncol = 3)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Three variables that seem to have outliers are; nalospi, wingcrd, and head.</p>
+</div>
+<div id="figure-5" class="section level3">
+<h3>Figure 5</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaDEgPC0gc3BhcnJvd3MgJT4lXG4gIGZpbHRlcihNb250aCAlaW4lIDY6OCkgJT4lXG4gIGdncGxvdCgpICtcbiAgZ2VvbV9oaXN0b2dyYW0oYWVzKHggPSB3dCksXG4gICAgICAgICAgICAgICAgIGJpbndpZHRoID0gMC41LFxuICAgICAgICAgICAgICAgICBib3VuZGFyeSA9IDAsXG4gICAgICAgICAgICAgICAgIGNsb3NlZCA9IFwicmlnaHRcIixcbiAgICAgICAgICAgICAgICAgY29sb3IgPSBcImJsYWNrXCIpICtcbiAgc2NhbGVfeF9jb250aW51b3VzKGJyZWFrcyA9IHNlcSgxNCwgMjgsIGJ5ID0gMikpXG5gYGAifQ== -->
+<pre class="r"><code>h1 &lt;- sparrows %&gt;%
+  filter(Month %in% 6:8) %&gt;%
+  ggplot() +
+  geom_histogram(aes(x = wt),
+                 binwidth = 0.5,
+                 boundary = 0,
+                 closed = &quot;right&quot;,
+                 color = &quot;black&quot;) +
+  scale_x_continuous(breaks = seq(14, 28, by = 2))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaDIgPC0gc3BhcnJvd3MgJT4lXG4gIGZpbHRlcihNb250aCAlaW4lIDY6OCkgJT4lXG4gIG11dGF0ZShNb250aCA9IGNhc2Vfd2hlbihcbiAgICBNb250aCA9PSA2IH4gXCJKdW5lXCIsXG4gICAgTW9udGggPT0gNyB+IFwiSnVseVwiLFxuICAgIE1vbnRoID09IDggfiBcIkF1Z3VzdFwiKSkgJT4lXG4gIGdncGxvdCgpICtcbiAgZ2VvbV9oaXN0b2dyYW0oYWVzKHggPSB3dCksXG4gICAgICAgICAgICAgICAgIGJpbndpZHRoID0gMC41LFxuICAgICAgICAgICAgICAgICBib3VuZGFyeSA9IDAsXG4gICAgICAgICAgICAgICAgIGNvbG9yID0gXCJibGFja1wiKSArXG4gIHNjYWxlX3hfY29udGludW91cyhicmVha3MgPSBzZXEoMTQsIDI4LCBieSA9IDIpKSArXG4gIGZhY2V0X3dyYXAofiBNb250aCwgbmNvbCA9IDEpXG5gYGAifQ== -->
+<pre class="r"><code>h2 &lt;- sparrows %&gt;%
+  filter(Month %in% 6:8) %&gt;%
+  mutate(Month = case_when(
+    Month == 6 ~ &quot;June&quot;,
+    Month == 7 ~ &quot;July&quot;,
+    Month == 8 ~ &quot;August&quot;)) %&gt;%
+  ggplot() +
+  geom_histogram(aes(x = wt),
+                 binwidth = 0.5,
+                 boundary = 0,
+                 color = &quot;black&quot;) +
+  scale_x_continuous(breaks = seq(14, 28, by = 2)) +
+  facet_wrap(~ Month, ncol = 1)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaDEgKyBoMlxuYGBgIn0= -->
+<pre class="r"><code>h1 + h2</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="figure-10" class="section level3">
+<h3>Figure 10</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3BhcnJvd3MgJT4lIGdnc2NhdG1hdChjb2x1bW5zID0gMTo3KVxuYGBgIn0= -->
+<pre class="r"><code>sparrows %&gt;% ggscatmat(columns = 1:7)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="figure-11" class="section level3">
+<h3>Figure 11</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubW9udGhfb3JkZXIgPSBjKFwiTWF5XCIsIFwiSnVuZVwiLCBcIkp1bHlcIiwgXCJBdWd1c3RcIiwgXCJTZXB0ZW1iZXJcIilcbnNwYXJyb3dzICU+JVxuICBmaWx0ZXIoTW9udGggJWluJSA1OjksXG5TZXggIT0gMCkgJT4lXG4gIG11dGF0ZShNb250aCA9IGNhc2Vfd2hlbihcbiAgICBNb250aCA9PSA1IH4gXCJNYXlcIixcbiAgICBNb250aCA9PSA2IH4gXCJKdW5lXCIsXG4gICAgTW9udGggPT0gNyB+IFwiSnVseVwiLFxuICAgIE1vbnRoID09IDggfiBcIkF1Z3VzdFwiLFxuICAgIE1vbnRoID09IDkgfiBcIlNlcHRlbWJlclwiKSxcbiAgICBNb250aCA9IGZhY3RvcihNb250aCwgbGV2ZWxzID0gbW9udGhfb3JkZXIsIG9yZGVyZWQgPSBUUlVFKSxcbiAgICBTZXggPSBpZmVsc2UoU2V4ID09IDQsIFwiTWFsZVwiLCBcIkZlbWFsZVwiKSkgJT4lXG4gIGdncGxvdChhZXMoeCA9IHdpbmdjcmQsXG55ID0gd3QpKSArXG4gIGdlb21fcG9pbnQoKSArXG4gIGdlb21fc21vb3RoKG1ldGhvZCA9IFwibG1cIiwgc2UgPSBGQUxTRSkgK1xuICBmYWNldF9ncmlkKFNleCB+IE1vbnRoKVxuYGBgIn0= -->
+<pre class="r"><code>month_order = c(&quot;May&quot;, &quot;June&quot;, &quot;July&quot;, &quot;August&quot;, &quot;September&quot;)
+sparrows %&gt;%
+  filter(Month %in% 5:9,
+Sex != 0) %&gt;%
+  mutate(Month = case_when(
+    Month == 5 ~ &quot;May&quot;,
+    Month == 6 ~ &quot;June&quot;,
+    Month == 7 ~ &quot;July&quot;,
+    Month == 8 ~ &quot;August&quot;,
+    Month == 9 ~ &quot;September&quot;),
+    Month = factor(Month, levels = month_order, ordered = TRUE),
+    Sex = ifelse(Sex == 4, &quot;Male&quot;, &quot;Female&quot;)) %&gt;%
+  ggplot(aes(x = wingcrd,
+y = wt)) +
+  geom_point() +
+  geom_smooth(method = &quot;lm&quot;, se = FALSE) +
+  facet_grid(Sex ~ Month)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>The only negative plot is males in may.</p>
+<!-- rnb-text-end -->
+</div>
+</div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIkhXIDA3IFBhcnQgMSINCmF1dGhvcjogIk1lbHZpbiBDdW1taW5ncyINCmRhdGU6ICJgciBmb3JtYXQoU3lzLnRpbWUoKSwgJyVkICVCICVZJylgIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQplZGl0b3Jfb3B0aW9uczogDQogIGNodW5rX291dHB1dF90eXBlOiBpbmxpbmUNCi0tLQ0KDQoNCg0KDQoNCmBgYHtyfQ0KbGlicmFyeShkcGx5cikNCmxpYnJhcnkodGlkeXZlcnNlKQ0KbGlicmFyeShHR2FsbHkpDQpsaWJyYXJ5KHBhdGNod29yaykNCmBgYA0KDQpgYGB7cn0NCnNwYXJyb3cgPC0gcmVhZF90c3YoInNwYXJyb3dzLnR4dCIpDQpzcGFycm93DQpgYGANCmBgYHtyfQ0KZmlsZV9wYXRoIDwtICgifi9CaTQ4NS9jdW1taW5nc19tZWx2aW4vRGF0YS9zcGFycm93cy50eHQiKQ0KDQpgYGANCg0K</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkhXIDA3IFBhcnQgMSINCmF1dGhvcjogIk1lbHZpbiBDdW1taW5ncyINCmRhdGU6ICJgciBmb3JtYXQoU3lzLnRpbWUoKSwgJyVkICVCICVZJylgIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQplZGl0b3Jfb3B0aW9uczogDQogIGNodW5rX291dHB1dF90eXBlOiBpbmxpbmUNCi0tLQ0KIyNQYXJ0IDENCmBgYHtyfQ0KbGlicmFyeSh0aWR5dmVyc2UpDQpsaWJyYXJ5KEdHYWxseSkNCmxpYnJhcnkoZGV2dG9vbHMpDQpsaWJyYXJ5KHBhdGNod29yaykNCmBgYA0KIyMjSW1wb3J0IGFuZCB3cmFuZ2xlDQpgYGB7cn0NCmZpbGVfcGF0aCA8LSAifi9CaTQ4NS9jdW1taW5nc19tZWx2aW4vZGF0YSINCg0Kc3BhcnJvdyA8LSByZWFkX3RzdihmaWxlLnBhdGgoZmlsZV9wYXRoLCAic3BhcnJvd3MudHh0IikpDQoNCnNwYXJyb3cNCmBgYA0KDQpgYGB7cn0NClZpZXcoc3BhcnJvdykNCmBgYA0KDQpgYGB7cn0NCnNwYXJyb3dzIDwtIHNwYXJyb3cgJT4lDQogIG11dGF0ZShib3hfZ3JvdXAgPSAiU3BhcnJvd3MiLA0KICAgICAgICAgcm93X29yZGVyID0gMTogbnJvdyguKSkNClZpZXcoc3BhcnJvd3MpDQpgYGANCg0KIyMjRmlndXJlIDINCg0KYGBge3J9DQpwbG90X2JveCA8LQ0KICBzcGFycm93cyAlPiUNCiAgZ2dwbG90KGFlcyh4ID0gYm94X2dyb3VwLA0KICAgICAgICAgICAgIHkgPSB3aW5nY3JkKSkgKw0KICBnZW9tX2JveHBsb3Qod2lkdGggPSAwLjI1KSArDQogIGxhYnMoeCA9IE5VTEwsDQogICAgICAgeSA9ICJXaW5nIGxlbmd0aCAobW0pIikNCnBsb3RfYm94DQpgYGANCg0KYGBge3J9DQpwbG90X2NsZXZlbGFuZCA8LQ0KICBzcGFycm93cyAlPiUNCiAgZ2dwbG90KGFlcyh4ID0gd2luZ2NyZCwNCiAgICAgICAgICAgICB5ID0gcm93X29yZGVyKSkgKw0KICBnZW9tX3BvaW50KCkgKw0KICBsYWJzKHggPSAiV2luZyBsZW5ndGggKG1tKSIsDQogICAgICAgeSA9ICJPcmRlciBvZiB0aGUgZGF0YSIpDQpwbG90X2NsZXZlbGFuZA0KYGBgDQoNCmBgYHtyfQ0KcGxvdF9ib3ggKyBwbG90X2NsZXZlbGFuZCArIGNvb3JkX2ZsaXAoKQ0KYGBgDQoNCiMjI0ZpZ3VyZSAzDQoNCmBgYHtyfQ0KcF9jdWxtZW4gPC0gc3BhcnJvd3MgJT4lDQogIGdncGxvdChhZXMoeSA9IHJvd19vcmRlcikpICsNCiAgZ2VvbV9wb2ludChhZXMoeCA9IGN1bG1lbikpICsNCiAgdGhlbWUoYXhpcy50aXRsZS55PWVsZW1lbnRfYmxhbmsoKSwNCiAgICAgICAgYXhpcy50ZXh0Lnk9ZWxlbWVudF9ibGFuaygpLA0KICAgICAgICBheGlzLnRpY2tzLnk9ZWxlbWVudF9ibGFuaygpKQ0KcF9jdWxtZW4NCmBgYA0KDQpgYGB7cn0NCnBfbmFwb3NwaSA8LSBzcGFycm93cyAlPiUNCiAgZ2dwbG90KGFlcyh5ID0gcm93X29yZGVyKSkgKw0KICBnZW9tX3BvaW50KGFlcyh4ID0gbmFsb3NwaSkpICsNCiAgdGhlbWUoYXhpcy50aXRsZS55PWVsZW1lbnRfYmxhbmsoKSwNCiAgICAgICAgYXhpcy50ZXh0Lnk9ZWxlbWVudF9ibGFuaygpLA0KICAgICAgICBheGlzLnRpY2tzLnk9ZWxlbWVudF9ibGFuaygpKQ0KcF9uYXBvc3BpDQpgYGANCg0KYGBge3J9DQpwX3d0IDwtIHNwYXJyb3dzICU+JQ0KICBnZ3Bsb3QoYWVzKHkgPSByb3dfb3JkZXIpKSArDQogIGdlb21fcG9pbnQoYWVzKHggPSB3dCkpICsNCiAgdGhlbWUoYXhpcy50aXRsZS55PWVsZW1lbnRfYmxhbmsoKSwNCiAgICAgICAgYXhpcy50ZXh0Lnk9ZWxlbWVudF9ibGFuaygpLA0KICAgICAgICBheGlzLnRpY2tzLnk9ZWxlbWVudF9ibGFuaygpKQ0KcF93dA0KYGBgDQoNCmBgYHtyfQ0KcF93aW5nY3JkPC0gc3BhcnJvd3MgJT4lDQogIGdncGxvdChhZXMoeSA9IHJvd19vcmRlcikpICsNCiAgZ2VvbV9wb2ludChhZXMoeCA9IHdpbmdjcmQpKSArDQogIHRoZW1lKGF4aXMudGl0bGUueT1lbGVtZW50X2JsYW5rKCksDQogICAgICAgIGF4aXMudGV4dC55PWVsZW1lbnRfYmxhbmsoKSwNCiAgICAgICAgYXhpcy50aWNrcy55PWVsZW1lbnRfYmxhbmsoKSkNCnBfd2luZ2NyZA0KYGBgDQoNCmBgYHtyfQ0KcF90YXJzdXMgPC0gc3BhcnJvd3MgJT4lDQogIGdncGxvdChhZXMoeSA9IHJvd19vcmRlcikpICsNCiAgZ2VvbV9wb2ludChhZXMoeCA9IHRhcnN1cykpICsNCiAgdGhlbWUoYXhpcy50aXRsZS55PWVsZW1lbnRfYmxhbmsoKSwNCiAgICAgICAgYXhpcy50ZXh0Lnk9ZWxlbWVudF9ibGFuaygpLA0KICAgICAgICBheGlzLnRpY2tzLnk9ZWxlbWVudF9ibGFuaygpKQ0KcF90YXJzdXMNCmBgYA0KDQpgYGB7cn0NCnBfaGVhZCA8LSBzcGFycm93cyAlPiUNCiAgZ2dwbG90KGFlcyh5ID0gcm93X29yZGVyKSkgKw0KICBnZW9tX3BvaW50KGFlcyh4ID0gaGVhZCkpICsNCiAgdGhlbWUoYXhpcy50aXRsZS55PWVsZW1lbnRfYmxhbmsoKSwNCiAgICAgICAgYXhpcy50ZXh0Lnk9ZWxlbWVudF9ibGFuaygpLA0KICAgICAgICBheGlzLnRpY2tzLnk9ZWxlbWVudF9ibGFuaygpKQ0KcF9oZWFkDQpgYGANCg0KYGBge3J9DQpwX2N1bG1lbiArIHBfbmFwb3NwaSArIHBfd3QgKyBwX3dpbmdjcmQgKyBwX3RhcnN1cyArIHBfaGVhZCArIHBsb3RfbGF5b3V0KG5jb2wgPSAzKQ0KYGBgDQoNClRocmVlIHZhcmlhYmxlcyB0aGF0IHNlZW0gdG8gaGF2ZSBvdXRsaWVycyBhcmU7IG5hbG9zcGksIHdpbmdjcmQsIGFuZCBoZWFkLg0KDQojIyNGaWd1cmUgNQ0KDQpgYGB7cn0NCmgxIDwtIHNwYXJyb3dzICU+JQ0KICBmaWx0ZXIoTW9udGggJWluJSA2OjgpICU+JQ0KICBnZ3Bsb3QoKSArDQogIGdlb21faGlzdG9ncmFtKGFlcyh4ID0gd3QpLA0KICAgICAgICAgICAgICAgICBiaW53aWR0aCA9IDAuNSwNCiAgICAgICAgICAgICAgICAgYm91bmRhcnkgPSAwLA0KICAgICAgICAgICAgICAgICBjbG9zZWQgPSAicmlnaHQiLA0KICAgICAgICAgICAgICAgICBjb2xvciA9ICJibGFjayIpICsNCiAgc2NhbGVfeF9jb250aW51b3VzKGJyZWFrcyA9IHNlcSgxNCwgMjgsIGJ5ID0gMikpDQpgYGANCg0KYGBge3J9DQpoMiA8LSBzcGFycm93cyAlPiUNCiAgZmlsdGVyKE1vbnRoICVpbiUgNjo4KSAlPiUNCiAgbXV0YXRlKE1vbnRoID0gY2FzZV93aGVuKA0KICAgIE1vbnRoID09IDYgfiAiSnVuZSIsDQogICAgTW9udGggPT0gNyB+ICJKdWx5IiwNCiAgICBNb250aCA9PSA4IH4gIkF1Z3VzdCIpKSAlPiUNCiAgZ2dwbG90KCkgKw0KICBnZW9tX2hpc3RvZ3JhbShhZXMoeCA9IHd0KSwNCiAgICAgICAgICAgICAgICAgYmlud2lkdGggPSAwLjUsDQogICAgICAgICAgICAgICAgIGJvdW5kYXJ5ID0gMCwNCiAgICAgICAgICAgICAgICAgY29sb3IgPSAiYmxhY2siKSArDQogIHNjYWxlX3hfY29udGludW91cyhicmVha3MgPSBzZXEoMTQsIDI4LCBieSA9IDIpKSArDQogIGZhY2V0X3dyYXAofiBNb250aCwgbmNvbCA9IDEpDQpgYGANCg0KYGBge3J9DQpoMSArIGgyDQpgYGANCg0KIyMjRmlndXJlIDEwDQoNCmBgYHtyfQ0Kc3BhcnJvd3MgJT4lIGdnc2NhdG1hdChjb2x1bW5zID0gMTo3KQ0KYGBgDQoNCiMjI0ZpZ3VyZSAxMQ0KDQpgYGB7cn0NCm1vbnRoX29yZGVyID0gYygiTWF5IiwgIkp1bmUiLCAiSnVseSIsICJBdWd1c3QiLCAiU2VwdGVtYmVyIikNCnNwYXJyb3dzICU+JQ0KICBmaWx0ZXIoTW9udGggJWluJSA1OjksDQpTZXggIT0gMCkgJT4lDQogIG11dGF0ZShNb250aCA9IGNhc2Vfd2hlbigNCiAgICBNb250aCA9PSA1IH4gIk1heSIsDQogICAgTW9udGggPT0gNiB+ICJKdW5lIiwNCiAgICBNb250aCA9PSA3IH4gIkp1bHkiLA0KICAgIE1vbnRoID09IDggfiAiQXVndXN0IiwNCiAgICBNb250aCA9PSA5IH4gIlNlcHRlbWJlciIpLA0KICAgIE1vbnRoID0gZmFjdG9yKE1vbnRoLCBsZXZlbHMgPSBtb250aF9vcmRlciwgb3JkZXJlZCA9IFRSVUUpLA0KICAgIFNleCA9IGlmZWxzZShTZXggPT0gNCwgIk1hbGUiLCAiRmVtYWxlIikpICU+JQ0KICBnZ3Bsb3QoYWVzKHggPSB3aW5nY3JkLA0KeSA9IHd0KSkgKw0KICBnZW9tX3BvaW50KCkgKw0KICBnZW9tX3Ntb290aChtZXRob2QgPSAibG0iLCBzZSA9IEZBTFNFKSArDQogIGZhY2V0X2dyaWQoU2V4IH4gTW9udGgpDQpgYGANCg0KVGhlIG9ubHkgbmVnYXRpdmUgcGxvdCBpcyBtYWxlcyBpbiBtYXkuDQo=</div>
 
 
 

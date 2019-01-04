@@ -6,3 +6,224 @@ output: html_notebook
 editor_options: 
   chunk_output_type: inline
 ---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(smatr)
+
+
+```
+
+```{r}
+file_path <- ("~/Bi485/cummings_melvin/Hw06/darter.txt")
+start_pos <- c(1, 4, 15, 16, 17, 18, 21, 25, 29, 33, 36, 39, 40)
+stop_pos <- c(3, 14, 15, 16, 17, 20, 24, 28, 32, 35, 38, 40, 41)
+names <- c("specimen id", "species", "riffle", "age", "sex", "length", "depth", "velocity", "temperature", "majsub", "minsub", "majtype", "mintype")
+darter <- read_fwf("darter.txt", fwf_positions(start_pos, stop_pos, col_names = names), skip = 15)
+darter
+```
+
+```{r}
+darter_1 <- darter %>% 
+  filter(!species %in% c("zonale", "tetrazonum"))
+darter_1
+```
+
+```{r}
+mutate(darter_1,
+       total_substrate = majsub + minsub)
+
+
+```
+Yes total_substrate sums 1 for all observations
+
+```{r}
+mutate(darter_1,
+       riffle = ifelse(riffle == 1,
+                       "Riffle 1",
+                       "Riffle 2"))
+```
+
+```{r}
+mutate(darter_1,
+       length = length * 10)
+```
+
+```{r}
+mutate(darter_1,
+       sex = ifelse(sex == "f",
+                    "Female",
+                    "Male"))
+```
+
+```{r}
+darter_2 <- darter_1 %>% 
+  group_by(species) %>% 
+  summarise(length = mean(length, na.rm = TRUE),
+            depth = mean(depth, na.rm = TRUE),
+            velocity = mean(velocity, na.rm = TRUE))
+darter_2
+```
+
+
+Plot 1
+```{r}
+ggplot(data = darter_2, mapping = aes(x = species, y = length)) +
+  stat_summary(
+    fun.ymin = min,
+    fun.ymax = max,
+    fun.y = median) +
+  geom_point(data = darter_1, mapping = aes(x=species, y = length), shape = 21)  +
+  coord_flip() +
+  facet_wrap(~ riffle, nrow = 2) +
+  xlab("Species") +
+  ylab("Length (mm)")
+                
+```
+
+Sepctablile: has lower median in 2nd riffle
+Caeruleum: larger median in 1st riffle
+Blennioides larger riffle in 2nd riffle
+
+
+
+```{r}
+ggplot(data = darter_2, mapping = aes(x = species, y = length)) + geom_point(color = "gray50") +
+  stat_summary(fun.ymin = min,
+               fun.ymax = max,
+               fun.y = median,
+               geom = "point",
+               size = 2.2)
+
+```
+
+```{r}
+ggplot(data = darter_2, mapping = aes(x = species, y = length)) + geom_point(color = "gray50") +
+  stat_summary(fun.ymin = min,
+               fun.ymax = max,
+               fun.y = median,
+               geom = "point",
+               size = 2.2) +
+  stat_summary(fun.ymin = min,
+               fun.ymax = max,
+               fun.y = mean,
+               geom = "point",
+               size = 3,
+               color = "maroon")
+```
+Plot 2
+```{r}
+ggplot(data = darter_2, mapping = aes(x = species, y = length)) + geom_point(data = darter_1, mapping = aes(x = species, y = length)) +
+  stat_summary(fun.ymin = min,
+               fun.ymax = max,
+               fun.y = median,
+               geom = "point",
+               size = 2.2) +
+  stat_summary(fun.ymin = min,
+               fun.ymax = max,
+               fun.y = mean,
+               geom = "point",
+               size = 3,
+               color = "maroon") +
+  coord_flip() +
+  facet_wrap(~riffle, nrow = 1) + 
+  xlab("Species") +
+  ylab("Length (mm)")
+ 
+```
+
+##Feathers
+
+```{r}
+library(smatr)
+```
+
+
+```{r}
+file_path <- ("~/Bi485/cummings_melvin/Data/feathers.csv")
+feathers <- read_csv("feathers.csv") 
+locale = locale(decimal_mark = ",") 
+feathers
+```
+
+```{r}
+names(feathers) <- c("capture_date", "day", "site", "urban_score", "cortF", "cortB", "sex", "smi", "tarsus", "mass", "basal_cort", "stress_cort")
+feathers
+```
+
+
+```{r}
+mean_tarsus <- mean(feathers[["tarsus"]])
+mean_tarsus
+```
+
+```{r}
+feathers1 <- mutate(feathers, log_mass = log(mass), log_tarsus = log(tarsus))
+feathers1 
+```
+
+
+```{r}
+major_axis <- sma(log_mass ~ log_tarsus, data = feathers1)
+major_axis
+```
+```{r}
+summary(major_axis)
+```
+
+```{r}
+coef(major_axis)
+b <- coef(major_axis)
+b
+```
+
+```{r}
+feathers <- mutate(feathers,
+                   new_smi = mass * (mean_tarsus/tarsus) ^ b)
+feathers
+select(feathers, smi, new_smi)
+
+```
+
+```{r}
+basal_stress <- feathers  %>%
+  group_by(site)
+
+```
+
+```{r}
+basal_cort_mean <- mean(feathers$basal_stress, mean(basal_cort))
+```
+```{r}
+stress_cort_mean <- mean(feathers$stress_cort, na.rm = TRUE)
+
+```
+
+```{r}
+basal_cort_sd <- sd(feathers$basal_cort, na.rm = TRUE)
+```
+```{r}
+stress_cort_sd <- sd(feathers$stress_cort, na.rm = TRUE)
+```
+
+```{r}
+sey_basal <- mutate(basal_stress, (sd_basal*n)^2)
+
+sey_basal <- mutate(basal_stress, (sd_stress*n)2)
+```
+
+```{r}
+ggplot(data = feathers)+
+  geom_boxplot(mapping = aes(x = new_smi, y = site))
+```
+
+
+```{r}
+ggplot(data = feathers1) +
+  geom_point(mapping = aes(x = site, y = cortB)) + 
+  geom_errorbar(mapping = aes(x = site, ymin = sey_basal-1, ymax = sey_basal+1))
+```
+
+

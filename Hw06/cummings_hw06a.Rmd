@@ -1,6 +1,6 @@
 ---
 title: "HW 06 Part 1: Complete the sections"
-author: "your name"
+author: "Melvin Cummings"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output: html_notebook
 editor_options: 
@@ -25,13 +25,240 @@ You do not answer any of the questions this week. Just read and run all of the e
 
 Type and run all of the examples.
 
+```{r}
+library(nycflights13)
+library(tidyverse)
+flights_sml <- select(flights,
+                      year:day,
+                      ends_with("delay"),
+                      distance,
+                      air_time
+                      )
+mutate(flights_sml,
+       gain = dep_delay - arr_delay,
+       speed = distance / air_time * 60
+       )
+```
+
+Mutate:Adds a new column
+
+```{r}
+transmute(flights,
+          gain = dep_delay - arr_delay,
+          hours = air_time / 60,
+          gain_per_hour = gain / hours
+          )
+```
+
+Transmute: keeps new variables
+
+```{r}
+transmute(flights,
+          dep_time,
+          hour = dep_time %/% 100,
+          minutes = dep_time %% 100
+          )
+```
+
+```{r}
+(x <- 1:10)
+
+lag(x)
+
+lead(x)
+```
+
+```{r}
+x
+
+cumsum(x)
+
+cummean(x)
+```
+
+```{r}
+y <- c(1, 2, 2, NA, 3, 4)
+
+min_rank(y)
+
+min_rank(desc(y))
+
+row_number(y)
+
+dense_rank(y)
+
+percent_rank(y)
+
+cume_dist(y)
+```
+
+
+
 Pay careful attention to the useful creation functions in section 5.5.1. 
 
 ### Section 5.6: Grouped summaries with `summarise()`
 
+```{r}
+summarise(flights,
+          delay = mean(dep_delay, na.rm = TRUE))
+
+by_day <- group_by(flights,
+                   year,
+                   month,
+                   day)
+
+summarise(by_day, delay = mean(dep_delay, na.rm = TRUE))
+```
+
+```{r}
+by_dest <- group_by(flights, dest)
+delay <- summarise(by_dest,
+                   count = n(),
+                   dist = mean(distance, na.rm = TRUE),
+                   delay = mean(arr_delay, na.rm = TRUE)
+                   )
+delay <- filter(delay, count > 20, dest != "HNL")
+
+ggplot(data = delay, mapping = aes(x = dist, y = delay)) +
+  geom_point(aes(size = count), alpha = 1/3) +
+  geom_smooth(se = FALSE)
+```
+
+```{r}
+delays <- flights %>% 
+  group_by(dest) %>% 
+  summarise(
+    count = n(),
+    dist = mean(distance, na.rm = TRUE),
+    delay = mean(arr_delay, na.rm = TRUE)
+  ) %>% 
+filter(count > 20, dest != "HNL")
+```
+
+```{r}
+flights %>% 
+  group_by(year, month, day) %>% 
+  summarise(mean = mean(dep_delay))
+```
+
+na.rm: removes the NA values
+
+```{r}
+flights %>% 
+  group_by(year, month, day) %>% 
+  summarise(mean = mean(dep_delay, na.rm = TRUE))
+```
+```{r}
+not_cancelled <- flights %>%
+  filter(!is.na(dep_delay), !is.na(arr_delay))
+
+not_cancelled %>% 
+  group_by(year, month, day) %>% 
+  summarise(mean = mean(dep_delay))
+```
+
+
+
 Read and run all of the examples. Pay careful attention to the useful summary functions. Unless you really like baseball, skip the baseball part of 5.6.3.
+
+```{r}
+not_cancelled %>% 
+  group_by(year, month, day) %>% 
+  summarise(
+    avg_delay1 = mean(arr_delay),
+    avg_delay2 = mean(arr_delay[arr_delay > 0])  
+  )
+```
+
+```{r}
+not_cancelled %>% 
+  group_by(dest) %>% 
+  summarise(distance_sd = sd(distance)) %>% 
+  arrange(desc(distance_sd))
+```
+
+```{r}
+not_cancelled %>% 
+  group_by(year, month, day) %>% 
+  summarise(
+    first = min(dep_time),
+    last  = max(dep_time)
+  )
+```
+
+```{r}
+not_cancelled %>% 
+  group_by(year,month,day) %>% 
+  mutate(r=min_rank(desc(dep_time))) %>% 
+  filter(r %in% range(r))
+```
+
+```{r}
+not_cancelled %>% 
+  group_by(dest) %>% 
+  summarise(carrier = n_distinct(carrier)) %>% 
+  arrange(desc(carrier))
+```
+
+```{r}
+not_cancelled %>% 
+  count(dest)
+```
+
+```{r}
+not_cancelled %>% 
+  count(tailnum, wt = distance)
+```
+
+```{r}
+not_cancelled %>% 
+  group_by(year, month, day) %>% 
+  summarise(n_early = sum(dep_time < 500))
+
+not_cancelled %>% 
+  group_by(year, month, day) %>% 
+  summarise(hour_perc = mean(arr_delay > 60))
+
+```
+
+```{r}
+daily <- group_by(flights, year, month, day)
+(per_day   <- summarise(daily, flights = n()))
+
+(per_month <- summarise(per_day, flights = sum(flights)))
+
+(per_year  <- summarise(per_month, flights = sum(flights)))
+```
+
+```{r}
+daily %>% 
+  ungroup() %>% 
+  summarise(flights = n())
+
+```
+
+
 
 ### Section 5.7: Grouped mutates (and filters)
 
 Read and run all of the examples.
 
+```{r}
+flights_sml %>% 
+  group_by(year, month, day) %>%
+  filter(rank(desc(arr_delay)) < 10)
+```
+
+```{r}
+popular_dests <- flights %>% 
+  group_by(dest) %>% 
+  filter(n() > 365)
+popular_dests
+```
+
+```{r}
+popular_dests %>% 
+  filter(arr_delay > 0) %>% 
+  mutate(prop_delay = arr_delay / sum(arr_delay)) %>% 
+  select(year:day, dest, arr_delay, prop_delay)
+```

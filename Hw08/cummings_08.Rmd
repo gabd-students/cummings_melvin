@@ -1,18 +1,211 @@
 ---
-title: "R Notebook"
+title: "HW 08 Part 1"
+author: "Melvin Cummings"
+date: "`r format(Sys.time(), '%d %B %Y')`"
 output: html_notebook
+editor_options: 
+  chunk_output_type: inline
 ---
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
-
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
-
 ```{r}
-plot(cars)
+library(tidyverse)
+library(lubridate)
+
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+##Question 1
+```{r}
+birth_date <- "3 July 1996"
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+# Elizabeth Garret Anderson was the first female physician
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+anderson <- "9 June 1836"
+
+# Mary Anning discovered the first complete Plesiosaur fossil, and other important Jurassic fossils
+
+anning <- "1799/05/21"
+
+# Alice Augusta Ball was a chemist who developed the first injectable treatment for leprosy.
+
+ball <- "July 24, 1892"
+
+# Sylvia Earle was the first chieft scientist at NOAA
+
+earle <- "August, 30 (1935)"
+
+# Rosalind Franklin used x-ray diffraction to discover DNA structure. Watson and Crick claimed credit.
+
+franklin <- "25th of July, 1920"
+
+# Ester Lederberg was the first to discover that viruses infect bacteria. Led to discovery of lambda bacteriophage
+
+lederberg <- "December 18, 1922"
+
+# Barbara McClintock discovered transposable elements (jumping genes), and developed staining techniques to study chromosomes
+
+mcclintock <- "16061902"
+
+# Martin Luther King's birthday is coming up. Let's remember a dream
+
+mlk_birth <- "1/15/29"
+
+mlk_dream <- "1963 August 08"
+
+```
+
+```{r}
+melvin <- dmy(birth_date)
+
+anderson <- dmy(anderson)
+
+anning <- ymd(anning)
+
+ball <- mdy(ball)
+
+earle <- mdy(earle)
+
+franklin <- dmy(franklin)
+
+lederberg <- mdy(lederberg)
+
+mcclintock <- dmy(mcclintock)
+
+mlk_birth <- mdy(mlk_birth)
+
+mlk_dream <- ymd(mlk_dream)
+
+melvin
+anderson
+anning
+ball
+earle
+franklin
+lederberg
+mcclintock
+mlk_birth
+mlk_dream
+
+
+
+
+```
+
+##Question 2
+
+MLK birth year is incorrect
+
+```{r}
+mlk_birth <- update(mlk_birth, year = 1929)
+mlk_birth
+```
+
+##Question 3
+
+```{r}
+melvin_weekday <- wday(melvin, label = TRUE, abbr = FALSE)
+melvin_weekday
+```
+I was born on wednesday.
+
+##Question 4
+
+```{r}
+melvin_weekday <- update(melvin, year = 2019)
+melvin_weekday <- wday(melvin_weekday, label = TRUE, abbr = FALSE)
+melvin_weekday
+```
+
+##Question 5
+
+```{r}
+melvin_2525 <- update(melvin, year = 2525)
+melvin_2525_weekday <- wday(melvin_2525, label = TRUE, abbr = TRUE)
+melvin_2525_weekday
+```
+
+```{r}
+age = year(melvin_2525) - year(melvin)
+age
+```
+
+##Question 6
+
+```{r}
+days <- abs(anderson - ball)
+days
+```
+
+##Question 7
+
+```{r}
+mlk_days <- abs(mlk_birth - mlk_dream)
+mlk_days
+```
+
+
+
+```{r}
+birth_date1 <- c("1996-07-03", "1836-06-09", "1799-05-21", "1892-07-24", "1935-08-30", "1920-07-25", "1922-12-18", "1902-06-16", "1929-01-15")
+names(birth_date1) <- c("melvin", "anderson", "anning", "ball", "earle", "franklin", "lederberg", "mcclintock", "mlk_birth")
+birth_date1
+```
+
+```{r}
+years <- year(birth_date1)
+leap_year <- leap_year(years)
+leap_year <- years[leap_year]
+leap_year
+```
+
+Anderson, ball, franklin, and me were born in leap years
+
+```{r}
+birth_date2 <- ymd(birth_date1)
+birthdays <- birth_date2[1]
+birthday_diff <- melvin - birth_date2
+names(birthday_diff) <- c("melvin", "anderson", "anning", "ball", "earle", "franklin", "lederberg", "mcclintock", "mlk")
+sort(birthday_diff, decreasing = TRUE)
+```
+
+#Part 2
+
+```{r}
+file_path <- "~/Bi485/cummings_melvin/data"
+
+lake_ice <- read_csv(file.path(file_path, "lake_ice.csv"))
+lake_ice
+```
+
+```{r}
+lake_ice1 <- filter(lake_ice, lakename == "LAKE MENDOTA")
+lake_ice1
+```
+
+```{r}
+lake_ice1 <- select(lake_ice1, iceon_year, iceon_month, iceon_day, iceoff_year, iceoff_month, iceoff_day)
+lake_ice1
+```
+
+```{r}
+lake_ice2 <- lake_ice1 %>% 
+  select(iceon_year, iceon_month, iceon_day, iceoff_year, iceoff_month, iceoff_day) %>% 
+  mutate(ice_on = make_date(iceon_year,iceon_month, iceon_day),
+         ice_off = make_date(iceoff_year, iceoff_month, iceoff_day))
+lake_ice2
+
+```
+
+```{r}
+lake_ice3 <- lake_ice2 %>% 
+  mutate(duration = as.numeric(ice_off - ice_on))
+lake_ice3
+```
+
+```{r}
+ggplot(data = lake_ice3) +
+  geom_line(mapping = aes(x = iceoff_year, y = duration), na.rm = TRUE) +
+  coord_cartesian(xlim = c(1850, 2013)) +
+  xlab("Year") + ylab("Ice Duration (days)")
+```
+
+

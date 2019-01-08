@@ -208,4 +208,124 @@ ggplot(data = lake_ice3) +
   xlab("Year") + ylab("Ice Duration (days)")
 ```
 
+##Soil 
+
+```{r}
+file_path2 <- "~/Bi485/cummings_melvin/data"
+
+soil <- read.delim(file.path(file_path2, "soil_co2.txt"))
+soil
+```
+
+```{r}
+january <- make_date(year = 2006, day = 1, month = 1)
+january
+```
+
+```{r}
+soil1 <- soil %>% 
+  rename(Day_number = DayN..) %>% 
+  rename(Day = Datecode..) %>% 
+  rename(Minute = Min..) %>% 
+  rename(Vegetation_sample = Veg..) %>% 
+  rename(Plot = Plot..) %>% 
+  rename(Group = Group..) %>%
+  rename(CO2_concentration = CorrCO2..) %>%
+  rename(Soil_type = SoilT..)
+soil1
+```
+
+
+```{r}
+soil2 <- soil %>% 
+  mutate(Date = january + DayN..,
+         Year = year(Date),
+         Month = month(Date, label = TRUE, abbr = TRUE)) %>% 
+group_by(Year, Month)
+soil2
+```
+
+
+```{r}
+soil3 <- soil2 %>%
+  summarise(
+    mean_CO2 = mean(CorrCO2..),
+    se_Co2 = sd(CorrCO2..)/sqrt(n())
+  )
+soil3
+```
+
+```{r}
+ggplot(data = soil3) +
+  geom_col(aes(x = Month, y = mean_CO2)) +
+  geom_linerange(aes(x = Month, ymin = mean_CO2 - se_Co2, ymax = mean_CO2 + se_Co2)) +
+  facet_wrap(~ Year, ncol = 3)
+```
+
+```{r}
+ggplot(data = soil3) +
+  geom_point(aes(x = Month, y = mean_CO2)) +
+  geom_linerange(aes(x = Month, ymin = mean_CO2 - se_Co2, ymax = mean_CO2 + se_Co2)) +
+  facet_wrap(~Year, nrow = 2)
+```
+
+
+```{r}
+file_path3 <- "~/Bi485/cummings_melvin/data"
+
+thebes <- read_csv(file.path(file_path3, "thebes_discharge.csv"))
+thebes
+```
+
+```{r}
+thebes
+colnames(thebes)
+thebes2 <- thebes %>%
+  gather ("1988":"2018", key = "Year", value = "discharge") %>% 
+  group_by(Year, Month) %>% 
+  mutate(discharge = discharge / 1000,
+         Event = case_when(
+           Year== "1993" ~ "Flood",
+           Year == "2011" ~ "Flood",
+           Year == "1988" ~ "Drought",
+           Year == "2012" ~ "Drought",
+           TRUE ~ "Normal"),
+         average_discharge = mean(discharge), na.rm = FALSE)
+thebes2
+```
+
+```{r}
+eventyear <- thebes2 %>% 
+  filter(Event %in% c ("Floot", "Drought"))
+eventyear
+```
+
+```{r}
+plot <- thebes2 %>% 
+  ggplot() +
+  geom_line(aes(x = Month, y = average_discharge, group = Year),
+            color = "gray70",
+            size = 0.3) + 
+  labs(x=NULL, y ="Discharge (cf/s, thousand)")
+plot
+```
+
+```{r}
+plot2 <- thebes2 %>% 
+  ggplot() +
+  geom_line(aes(x = Month, y = average_discharge, group = Year),
+            color = "gray70",
+            size = 0.3) + 
+  labs(x=NULL, y ="Discharge (cf/s, thousand)") +
+  geom_line(Data = years, aes(x= Month, y = average_discharge, group = Year, color = Event))
+plot2
+```
+
+
+
+
+
+
+
+
 

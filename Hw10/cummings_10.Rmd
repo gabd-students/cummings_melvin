@@ -1,0 +1,13 @@
+---
+title: "HW 10"
+author: "Melvin Cummings"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r}
+
+```
+

@@ -1,0 +1,352 @@
+---
+title: "HW 09"
+author: "Melvin Cummings"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: html_notebook
+editor_options: 
+  chunk_output_type: inline
+---
+#Part 1
+```{r}
+library(tidyverse)
+library(ggthemes)
+```
+
+```{r}
+file_path <- "~/Bi485/cummings_melvin/data"
+
+gliadin <-
+  read_lines(file.path(file_path, "beta_gliadin.txt"))
+gliadin
+```
+
+```{r}
+beta_gliadin <- gliadin %>% 
+  str_replace_all("\\s", "\\") %>% 
+  str_replace_all("\\d", "\\") 
+beta_gliadin
+```
+
+```{r}
+beta_gliadin <- beta_gliadin %>% 
+  str_c(collapse = "")
+beta_gliadin
+```
+
+
+```{r}
+beta_gliadin <- beta_gliadin %>% 
+  str_to_upper()
+beta_gliadin
+```
+
+```{r}
+str_length(beta_gliadin)
+```
+
+```{r}
+str_count(beta_gliadin, "[^ACGT]")
+```
+
+```{r}
+str_count(beta_gliadin, "ATG")
+```
+
+```{r}
+str_count(beta_gliadin, "TGA|TTA")
+
+```
+
+```{r}
+caat_box <- "CCAAT"
+
+tata_box <- "CTATAA"
+
+str_count(beta_gliadin, caat_box)
+
+str_count(beta_gliadin, tata_box)
+```
+
+Caat_box 4, tata_box 1
+
+```{r}
+caat_seq <- "CCAAT.{100,150}ATG"
+
+str_count(beta_gliadin, caat_seq)
+```
+
+This sequence occurs twice
+
+```{r}
+tata_seq <- "CTATAA.{50,100}ATG"
+
+str_count(beta_gliadin, tata_seq)
+```
+
+This sequence occurs once
+
+```{r}
+caat_seqs_all <- str_extract_all(beta_gliadin, caat_seq, simplify = TRUE)
+
+str_length(caat_seqs_all)
+
+caat_seqs_all
+```
+
+```{r}
+str_which(caat_seqs_all, tata_box)
+
+promoter <- str_subset(caat_seqs_all, tata_box)
+
+promoter
+```
+
+```{r}
+str_length(promoter)
+```
+
+#Part 2
+
+```{r}
+file_path2 <- "~/Bi485/cummings_melvin/data"
+
+ants <- read_csv(file.path(file_path2, "ants.csv"))
+
+ants
+```
+
+```{r}
+ants_1 <- ants %>%
+  select(-c(season, seas.code, trt, plot, sample))%>%
+  gather(key = species, value = abundance, matches("\\w\\.\\w", ignore.case = FALSE))
+
+ants_1
+```
+
+```{r}
+ants_2 <- ants_1 %>% 
+  mutate(species = str_replace(
+    species,
+    pattern = "(^[A-Z]*\\w{3})\\w{3,}\\.(\\w{4})\\w{2,}",
+    replacement = "\\1\\2"),
+  year = factor(year, levels = c("2010", "2011"), labels = c("2010", "2011"), ordered = TRUE)) %>% 
+  group_by(year, species) %>% 
+  summarise(total = sum(abundance, na.rm = TRUE))
+
+ants_2
+```
+
+```{r}
+ants_2 %>%
+  ggplot(aes(x = reorder(species, total), y = total, group = species))+
+  geom_line(color = "gray")+
+  geom_point(aes(shape = year), size = 2)+
+  coord_flip()+
+  labs(x = NULL, y = "Total Abundance", shape = "Year")+
+  theme_minimal()
+```
+
+#Part 3
+
+```{r}
+library(tidyverse)
+
+library(htmlwidgets)
+
+```
+
+```{r}
+flowers <- read.csv(file.path(file_path, "flower_size.csv"))
+
+flowers
+```
+
+```{r}
+flowers_1 <- flowers %>%
+  filter(!is.na(Flower.number))%>%
+  select(species = Species, cor_length = Corolla.length..cm., throat_width = Corolla.width.throat..cm.)
+flowers_1
+```
+
+```{r}
+flower_sizes <- flowers_1 %>% 
+  separate(species, into = c("genus", "species"), sep = " ", extra = "drop")
+
+flower_sizes
+```
+
+```{r}
+flower_sizes2 <- flower_sizes %>%
+  group_by(genus, species)%>%
+  summarize(mean_length = mean(cor_length), mean_width = mean(throat_width), max_length = max(cor_length), max_width = max(throat_width))
+
+flower_sizes2
+```
+
+```{r}
+pollinator_raw <- read_csv(file.path(file_path, "flower_pollinators.csv"))
+```
+
+```{r}
+pollinator_raw
+```
+
+```{r}
+pollinators <- pollinator_raw %>% 
+  select(-c(Color, starts_with("Source"))) %>%
+  filter(!is.na(Pollinator)) %>%
+  separate(Species, into = c("genus", "species"), sep = " ", extra = "drop")
+
+pollinators
+```
+
+```{r}
+pollinators <- pollinators %>% 
+    separate(Pollinator, into = "Syndrome", sep = " |, ")
+
+pollinators
+```
+
+
+```{r}
+phlox <- inner_join(flower_sizes2, pollinators, by = c("genus", "species"))
+
+phlox
+```
+
+```{r}
+phlox %>% 
+   ggplot(aes(x=mean_length, y=mean_width, color=Syndrome))+
+  geom_point()
+```
+
+```{r}
+phlox <- phlox%>%
+  mutate(
+    Syndrome = str_replace(Syndrome, "bee$", "bees"),
+    Syndrome = str_replace(Syndrome, "beetle$", "beetles"))
+
+phlox%>%
+  ggplot(aes(x=mean_length, y=mean_width, color=Syndrome))+
+  geom_point()
+
+```
+
+```{r}
+phlox%>%
+  group_by(Syndrome)%>%
+  count(Syndrome)
+```
+
+
+```{r}
+phlox <- phlox%>%
+  mutate(Syndrome = str_replace(Syndrome, "bees|beetles", "other insects"))
+
+phlox%>%
+  ggplot(aes(x=mean_length, y=mean_width, color=Syndrome))+
+  geom_point()
+```
+
+```{r}
+phlox <- phlox%>%
+  mutate(
+    syndrome_group = case_when(Syndrome == "autogamous" ~ "Autogamous",Syndrome == "bat" ~ "Mammal",Syndrome == "hummingbird" ~ "Bird", TRUE ~ "Insect"))
+
+phlox%>%
+  ggplot(aes(x=mean_length, y=mean_width, color=syndrome_group))+
+  geom_point()
+```
+
+```{r}
+phlox%>%
+  ggplot()+
+  geom_point(aes(x=mean_length,
+                 y=mean_width,
+                 color=syndrome_group))+
+  scale_color_brewer(type = "qual", palette = "Dark2")
+```
+
+```{r}
+ggplot(data = phlox) +
+  geom_point(mapping = aes(x = mean_length, y = mean_width, color = syndrome_group)) +
+  scale_color_viridis_d(option="magma")
+```
+
+```{r}
+semo_palette <- c("#C8102E", "#DBE245", "#71C5E8", "#B07C57")
+phlox%>%
+  ggplot()+
+  geom_point(aes(x=mean_length,
+                 y=mean_width,
+                 shape=syndrome_group,
+                 fill=syndrome_group))+
+  scale_shape_manual(values = c(22:25))+
+  scale_fill_manual(values = semo_palette)
+```
+
+#Part 4
+Ugly plot
+```{r}
+phlox %>% 
+   ggplot() +
+  geom_point(aes(x = max_length,
+                 y = max_width,
+                 shape = syndrome_group,
+                 fill = syndrome_group),
+             size = 3) +
+  labs(shape = "Syndrome",
+       fill = "Syndrome",
+       x = "Max Length (cm)",
+       y = "Max Width (cm)") +
+  theme_bw() +
+  scale_shape_manual(values = c(21:24)) +
+  scale_fill_brewer(palette = "Pastel5") +
+  theme(axis.text = element_text(size = 4),
+        axis.title = element_text(size = 4))
+```
+
+```{r}
+phlox %>% 
+   ggplot() +
+  geom_point(aes(x = max_length,
+                 y = max_width,
+                 shape = syndrome_group,
+                 fill = syndrome_group),
+             size = 5) +
+  labs(shape = "Syndrome",
+       fill = "Syndrome",
+       x = "Max Length (cm)",
+       y = "Max Width (cm)") +
+  theme_minimal() +
+  scale_shape_manual(values = c(21:24)) +
+  scale_fill_brewer(palette = "Dark2") +
+  theme(axis.text = element_text(size = 1 ),
+        axis.title = element_text(size = 1))
+```
+
+```{r}
+phlox %>% 
+  ggplot() +
+  geom_point(aes(x = max_length,
+                 y = max_width,
+                 color = syndrome_group)) +
+  labs(color = "Syndrome",
+       fill = "Syndrome",
+       x = "Max Length (cm)",
+       y = "Max Width (cm)") +
+  theme_bw() +
+  scale_shape_manual(values = c(20:23)) +
+  scale_color_viridis_d(option="viridis")
+```
+
+Good plot
+```{r}
+phlox%>%
+  ggplot()+
+  geom_point(aes(x=mean_length,
+                 y=mean_width,
+                 color=syndrome_group))+
+  scale_color_brewer(type = "qual", palette = "Set3")
+```
+
